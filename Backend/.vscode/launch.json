@@ -30,6 +30,13 @@
       "request": "launch",
       "mainClass": "com.richard.application.GatewayServiceApplication",
       "projectName": "gateway-service"
+    },
+    {
+      "type": "java",
+      "name": "Employee Service",
+      "request": "launch",
+      "mainClass": "com.richard.application.EmployeeServiceApplication",
+      "projectName": "employee-service"
     }
   ]
 }

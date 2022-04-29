@@ -5,6 +5,8 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:9000/eureka/
+  server:
+    enableSelfPreservation: false
 
 logging:
   pattern:
@@ -23,31 +25,53 @@ spring:
         - Path=/employee/**
         filters:
         - RewritePath=/employee/(?<path>.*), /$\{path}
-      - id: department-service
-        uri: lb://department-service
-        predicates:
-        - Path=/department/**
-        filters:
-        - RewritePath=/department/(?<path>.*), /$\{path}
-      - id: organization-service
-        uri: lb://organization-service
-        predicates:
-        - Path=/organization/**
-        filters:
-        - RewritePath=/organization/(?<path>.*), /$\{path}
+      # - id: department-service
+      #   uri: lb://department-service
+      #   predicates:
+      #   - Path=/department/**
+      #   filters:
+      #   - RewritePath=/department/(?<path>.*), /$\{path}
+      # - id: organization-service
+      #   uri: lb://organization-service
+      #   predicates:
+      #   - Path=/organization/**
+      #   filters:
+      #   - RewritePath=/organization/(?<path>.*), /$\{path}
       - id: openapi
         uri: http://localhost:${server.port}
         predicates:
         - Path=/v3/api-docs/**
         filters:
         - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            token-uri: http://richardvu.com:8010/auth/realms/cms-blog/protocol/openid-connect/token
+            authorization-uri: http://richardvu.com:8010/auth/realms/cms-blog/protocol/openid-connect/auth
+            userinfo-uri: http://richardvu.com:8010/auth/realms/cms-blog/protocol/openid-connect/userinfo
+            user-name-attribute: preferred_username
+        registration:
+          keycloak-with-test-scope:
+            provider: keycloak
+            client-id: cms-blog-client
+            client-secret: CMe9OsuWFVNsgOTLZvLi0jXmr1zdCq3O
+            authorization-grant-type: authorization_code
+            redirect-uri: "http://localhost:9002/login/oauth2/code/keycloak"
+          keycloak-without-test-scope:
+            provider: keycloak
+            client-id: cms-blog-client
+            client-secret: CMe9OsuWFVNsgOTLZvLi0jXmr1zdCq3O
+            authorization-grant-type: authorization_code
+            redirect-uri: "http://localhost:9002/login/oauth2/code/keycloak"
 
 springdoc:
   swagger-ui:
     urls:
       - name: employee
         url: /v3/api-docs/employee
-      - name: department
-        url: /v3/api-docs/department
-      - name: organization
-        url: /v3/api-docs/organization
+      # - name: department
+      #   url: /v3/api-docs/department
+      # - name: organization
+      #   url: /v3/api-docs/organization
